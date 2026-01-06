@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "spec-kit": {
+      "command": "python3",
+      "args": ["mcp_server.py"],
+      "env": {},
+      "cwd": "."
+    }
+  }
+}

@@ -1,0 +1,3 @@
+pyyaml>=6.0
+# NOTE: When the official MCP SDK is released on PyPI, update this to:
+# mcp>=0.1.0

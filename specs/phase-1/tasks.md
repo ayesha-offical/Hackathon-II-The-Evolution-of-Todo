@@ -127,17 +127,17 @@ Coverage: 80%+ maintained
 
 ### Tests for User Story 2 (TDD: Write tests FIRST)
 
-- [ ] T-016 [P] [US2] Write test_list_empty in `tests/test_storage.py`: Test empty task list retrieval
-- [ ] T-017 [P] [US2] Write test_list_all_tasks in `tests/test_storage.py`: Test listing multiple tasks with all fields
-- [ ] T-018 [P] [US2] Write test_list_display_cli in `tests/test_cli.py`: Test "list" command output formatting with rich table
+- [x] T-016 [P] [US2] Write test_list_empty in `tests/test_storage.py`: Test empty task list retrieval
+- [x] T-017 [P] [US2] Write test_list_all_tasks in `tests/test_storage.py`: Test listing multiple tasks with all fields
+- [x] T-018 [P] [US2] Write test_list_display_cli in `tests/test_cli.py`: Test "list" command output formatting with rich table
 
 ### Implementation for User Story 2
 
-- [ ] T-019 [US2] Implement TaskStorage.get_all_tasks() method in `src/storage.py` (depends on T-005)
-- [ ] T-020 [US2] Implement "list" command handler with rich table formatting in `src/cli.py` (depends on T-006, T-019)
-- [ ] T-021 [US2] Add status indicator display (✓ for completed, ☐ for incomplete) in `src/cli.py` per FR-003
-- [ ] T-022 [US2] Add error handling for edge cases (empty list, display formatting) in `src/cli.py`
-- [ ] T-023 [US2] Run pytest to verify all US2 tests pass with ≥80% cumulative coverage
+- [x] T-019 [US2] Implement TaskStorage.get_all_tasks() method in `src/storage.py` (depends on T-005)
+- [x] T-020 [US2] Implement "list" command handler with rich table formatting in `src/cli.py` (depends on T-006, T-019)
+- [x] T-021 [US2] Add status indicator display (✓ for completed, ☐ for incomplete) in `src/cli.py` per FR-003
+- [x] T-022 [US2] Add error handling for edge cases (empty list, display formatting) in `src/cli.py`
+- [x] T-023 [US2] Run pytest to verify all US2 tests pass with ≥80% cumulative coverage
 
 **Checkpoint**: User Stories 1 + 2 (Add & List) fully functional ✓
 

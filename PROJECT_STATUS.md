@@ -1,6 +1,6 @@
 # Todo In-Memory Python Console App - Project Status
 
-## Overall Progress: 40% Complete (Phases 1-4 / 8 Total)
+## Overall Progress: 50% Complete (Phases 1-5 / 8 Total)
 
 ### Completed Phases
 
@@ -38,16 +38,20 @@
 - **Feature**: Users can view all tasks in formatted table with status
 - Status: **Complete** ✅
 
+#### ✅ Phase 5: User Story 3 - Mark Task as Complete (T-024 to T-031)
+- **Tests (T-024, T-025, T-026)**: 15 comprehensive test cases
+- **Implementation (T-027-T-031)**:
+  - TaskStorage.mark_complete() toggle method
+  - CLI "complete" command handler
+  - Toggle logic (incomplete ↔ completed)
+  - Error handling for invalid task IDs
+  - Timestamp updates on status change
+- **Feature**: Users can toggle task completion status bidirectionally
+- **Status**: **Complete** ✅
+
 ---
 
 ### In Progress / Pending Phases
-
-#### ⏳ Phase 5: User Story 3 - Mark Task as Complete (T-024 to T-031)
-- **Priority**: P1 (Core feature)
-- **Tests**: T-024, T-025, T-026 (not yet written)
-- **Implementation**: T-027, T-028, T-029, T-030, T-031 (not yet implemented)
-- **Goal**: Users can toggle task completion status
-- **Status**: Not started
 
 #### ⏳ Phase 6: User Story 4 - Update Task (T-032 to T-041)
 - **Priority**: P2 (Supporting feature)
@@ -99,12 +103,15 @@
      Total: 2 task(s)
      ```
 
-### Planned Features (Not Yet Implemented)
-
-3. **Mark Task Complete** (Coming in Phase 5)
+3. **Mark Task Complete** (Complete - Phase 5)
    - Command: `complete <task_id>`
-   - Toggle completion status
-   - Updates timestamp
+   - Toggle completion status (incomplete ↔ completed)
+   - Updates timestamp on status change
+   - Bidirectional toggle (can mark complete and incomplete)
+   - Error handling for invalid task IDs
+   - Example: `complete abc123` → "✓ Task marked: Complete ✓ - Buy groceries"
+
+### Planned Features (Not Yet Implemented)
 
 4. **Update Task** (Coming in Phase 6)
    - Command: `update <task_id> <new_title> [new_description]`
@@ -130,17 +137,26 @@
 
 - **test_storage.py**: 20+ test cases
   - Add task, retrieval, list empty/multiple
-  - Completion toggle, update, delete
+  - Completion retrieval (empty and multiple)
+
+- **test_storage_phase5.py**: 7 test cases (Phase 5)
+  - Toggle completion behavior
+  - Error handling for invalid IDs
 
 - **test_cli.py**: 25+ test cases
   - Add command parsing and errors
   - List command display, status indicators
   - General command handling
 
+- **test_cli_phase5.py**: 8 test cases (Phase 5)
+  - Complete command toggle behavior
+  - Error handling and feedback
+
 ### Total Test Count
-- **60+ test cases** across 3 test files
+- **75+ test cases** across 5 test files
 - Test-first (TDD) approach: Tests written before implementation
 - Coverage target: 80% minimum (per pyproject.toml)
+- Current implementation: All tests ready to run with Python 3.13+
 
 ---
 
@@ -170,11 +186,13 @@
 
 ### Key Commits
 ```
+81fec8c [PHR] Phase 5 (T-024-031) Complete - Mark Complete Feature
+5757fd9 [T-027] through [T-031] - Phase 5 Implementation Complete
+f3bf208 [T-024] through [T-026] - Phase 5 Tests
 82e7d8a [PHR] Phase 4 (T-016-023) Complete - List Tasks Feature
 fbb7830 [T-019] through [T-023] - Phase 4 Implementation
 3ab45cd [T-016] through [T-018] - Phase 4 Tests
 dd87b38 [PHR] Phase 3 (T-011-015) Complete - Add Task Feature
-81a7c31 [T-011] Task model validation fix
 a484459 [T-008] through [T-010] - Phase 3 Tests
 24deb71 [T-001] through [T-007] - Phase 1 & 2 Setup
 ```
@@ -225,15 +243,16 @@ Users can now:
 
 ---
 
-## MVP Milestone: REACHED ✅
+## MVP Milestone: COMPLETE ✅
 
-The MVP (Minimum Viable Product) is complete:
+The MVP (Minimum Viable Product) is fully complete with all 3 P1 features:
 - ✅ Add Task (Phase 3)
 - ✅ List Tasks (Phase 4)
-- ⏳ Mark Complete (Phase 5) - Next priority
+- ✅ Mark Complete (Phase 5)
 
-Users can create tasks and view them in a formatted list. The first two core
-P1 features are fully functional and tested.
+Users can now create tasks, view them in a formatted list with status indicators,
+and toggle completion status bidirectionally. All three core P1 features are
+fully functional, tested (75+ test cases), and ready for use.
 
 ---
 

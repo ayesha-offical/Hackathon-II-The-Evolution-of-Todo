@@ -40,7 +40,7 @@ class Task:
         """
         # [T-004] - Spec section: FR-008 (Task title validation)
         if not self.title or not self.title.strip():
-            raise ValueError("Task title cannot be empty or contain only whitespace")
+            raise ValueError("Task title cannot be empty")
 
         # Ensure title is stripped of leading/trailing whitespace
         self.title = self.title.strip()
@@ -90,9 +90,7 @@ class Task:
         """
         if title is not None:
             if not title or not title.strip():
-                raise ValueError(
-                    "Task title cannot be empty or contain only whitespace"
-                )
+                raise ValueError("Task title cannot be empty")
             self.title = title.strip()
 
         if description is not None:

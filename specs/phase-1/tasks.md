@@ -98,17 +98,17 @@ Coverage: 80%+ maintained
 
 ### Tests for User Story 1 (TDD: Write tests FIRST, ensure they FAIL)
 
-- [ ] T-008 [P] [US1] Write test_task_creation in `tests/test_models.py`: Test Task model instantiation, ID generation, timestamps
-- [ ] T-009 [P] [US1] Write test_add_task_validation in `tests/test_storage.py`: Test empty title rejection, description optional, unique IDs per FR-001 and FR-008
-- [ ] T-010 [P] [US1] Write test_add_task_cli in `tests/test_cli.py`: Test "add" command parsing, success/error messages
+- [x] T-008 [P] [US1] Write test_task_creation in `tests/test_models.py`: Test Task model instantiation, ID generation, timestamps
+- [x] T-009 [P] [US1] Write test_add_task_validation in `tests/test_storage.py`: Test empty title rejection, description optional, unique IDs per FR-001 and FR-008
+- [x] T-010 [P] [US1] Write test_add_task_cli in `tests/test_cli.py`: Test "add" command parsing, success/error messages
 
 ### Implementation for User Story 1
 
-- [ ] T-011 [US1] Implement Task model validation: reject empty/whitespace titles in `src/models.py` (depends on T-004)
-- [ ] T-012 [US1] Implement TaskStorage.add_task() method in `src/storage.py` with UUID generation (depends on T-005, T-011)
-- [ ] T-013 [US1] Implement "add" command handler in `src/cli.py` with arg parsing and error messages (depends on T-006, T-012)
-- [ ] T-014 [US1] Add error handling for invalid input in CLI command flow in `src/cli.py`
-- [ ] T-015 [US1] Run pytest to verify all US1 tests pass with ≥80% coverage contribution
+- [x] T-011 [US1] Implement Task model validation: reject empty/whitespace titles in `src/models.py` (depends on T-004)
+- [x] T-012 [US1] Implement TaskStorage.add_task() method in `src/storage.py` with UUID generation (depends on T-005, T-011)
+- [x] T-013 [US1] Implement "add" command handler in `src/cli.py` with arg parsing and error messages (depends on T-006, T-012)
+- [x] T-014 [US1] Add error handling for invalid input in CLI command flow in `src/cli.py`
+- [x] T-015 [US1] Run pytest to verify all US1 tests pass with ≥80% coverage contribution
 
 **Checkpoint**: User Story 1 (Add Task) fully functional and independently testable ✓
 

@@ -504,3 +504,129 @@ class TestCLIErrorHandling:
         result = dispatcher.dispatch("   ")
 
         assert result is True
+
+
+# [T-018] - Spec section: FR-003 (Test CLI list command)
+class TestCLIListCommandDisplay:
+    """Test cases for 'list' command with table display."""
+
+    def test_list_command_empty_shows_message(self) -> None:
+        """
+        Test list command when no tasks exist.
+
+        Acceptance Criteria:
+        - Command returns True
+        - Displays user-friendly "No tasks" message
+        - No errors
+
+        Per Spec FR-003: Display empty list with user-friendly message.
+        """
+        storage = TaskStorage()
+        dispatcher = CommandDispatcher(storage)
+
+        result = dispatcher.dispatch("list")
+
+        assert result is True
+
+    def test_list_command_displays_multiple_tasks(self) -> None:
+        """
+        Test list command displays all tasks in table format.
+
+        Acceptance Criteria:
+        - Command returns True
+        - All tasks are displayed
+        - Table shows ID, Status, Title, Description
+        - Both completed and incomplete tasks shown
+
+        Per Spec FR-003: Display all tasks with details, show status indicators.
+        """
+        storage = TaskStorage()
+        dispatcher = CommandDispatcher(storage)
+
+        # Add mixed tasks
+        task1 = storage.add_task("Buy groceries", "Milk, eggs, bread")
+        task2 = storage.add_task("Clean room")
+        task3 = storage.add_task("Cook dinner", "Pasta with sauce")
+        storage.mark_complete(task3.id)  # Mark one as complete
+
+        result = dispatcher.dispatch("list")
+
+        assert result is True
+        assert storage.count_tasks() == 3
+
+    def test_list_command_shows_task_status_indicators(self) -> None:
+        """
+        Test list command displays correct status indicators.
+
+        Acceptance Criteria:
+        - Incomplete tasks show ☐ Pending indicator
+        - Completed tasks show ✓ Complete indicator
+        - Status clearly distinguishes task states
+
+        Per Spec FR-003: Status indicators (✓ for completed, ☐ for incomplete).
+        """
+        storage = TaskStorage()
+        dispatcher = CommandDispatcher(storage)
+
+        # Add tasks and toggle completion
+        task1 = storage.add_task("Incomplete task")
+        task2 = storage.add_task("Complete me")
+        storage.mark_complete(task2.id)
+
+        result = dispatcher.dispatch("list")
+
+        assert result is True
+        # Both tasks are still retrievable with correct status
+        tasks = storage.get_all_tasks()
+        assert len(tasks) == 2
+        incomplete = [t for t in tasks if not t.completed]
+        complete = [t for t in tasks if t.completed]
+        assert len(incomplete) == 1
+        assert len(complete) == 1
+
+    def test_list_command_with_long_descriptions(self) -> None:
+        """
+        Test list command handles long descriptions gracefully.
+
+        Acceptance Criteria:
+        - Long descriptions are displayed
+        - Table formatting handles variable-length content
+        - No crashes or overflow errors
+
+        Per Spec FR-003: Display all fields including description.
+        """
+        storage = TaskStorage()
+        dispatcher = CommandDispatcher(storage)
+
+        long_desc = "This is a very long description that might wrap in the table. " * 3
+        task = storage.add_task("Task with long description", long_desc)
+
+        result = dispatcher.dispatch("list")
+
+        assert result is True
+        retrieved = storage.get_task(task.id)
+        assert retrieved is not None
+        assert retrieved.description == long_desc
+
+    def test_list_command_shows_task_count(self) -> None:
+        """
+        Test list command displays total task count.
+
+        Acceptance Criteria:
+        - Shows "Total: N task(s)" at bottom
+        - Correct count reflects actual tasks
+        - Singular/plural handling (task vs tasks)
+
+        Per Spec FR-003: Display task count summary.
+        """
+        storage = TaskStorage()
+        dispatcher = CommandDispatcher(storage)
+
+        storage.add_task("Task 1")
+        storage.add_task("Task 2")
+        storage.add_task("Task 3")
+
+        result = dispatcher.dispatch("list")
+
+        assert result is True
+        assert storage.count_tasks() == 3

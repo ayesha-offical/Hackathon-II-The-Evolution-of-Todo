@@ -443,3 +443,92 @@ class TestTaskStorageUtilities:
 
         assert storage.count_tasks() == 0
         assert storage.get_all_tasks() == []
+
+
+# [T-016] - Spec section: FR-003 (Test TaskStorage list empty)
+class TestTaskStorageListEmpty:
+    """Test cases for TaskStorage.get_all_tasks() with empty storage."""
+
+    def test_list_empty_storage(self) -> None:
+        """
+        Test retrieving all tasks from empty storage.
+
+        Acceptance Criteria:
+        - Returns empty list
+        - Type is list (not None)
+        - No errors
+
+        Per Spec FR-003: System MUST display empty list with user-friendly message.
+        """
+        storage = TaskStorage()
+        tasks = storage.get_all_tasks()
+
+        assert tasks == []
+        assert isinstance(tasks, list)
+        assert len(tasks) == 0
+
+
+# [T-017] - Spec section: FR-003 (Test TaskStorage list all tasks)
+class TestTaskStorageListAll:
+    """Test cases for TaskStorage.get_all_tasks() with multiple tasks."""
+
+    def test_list_multiple_tasks(self) -> None:
+        """
+        Test retrieving all tasks when multiple exist.
+
+        Acceptance Criteria:
+        - Returns all added tasks
+        - All fields are present (id, title, description, completed, timestamps)
+        - Order is preserved (or at least consistent)
+        - Correct count matches added tasks
+
+        Per Spec FR-003: System MUST display all tasks with details.
+        """
+        storage = TaskStorage()
+        task1 = storage.add_task("Task 1", "Description 1")
+        task2 = storage.add_task("Task 2")
+        task3 = storage.add_task("Task 3", "Description 3")
+
+        tasks = storage.get_all_tasks()
+
+        assert len(tasks) == 3
+        task_ids = {t.id for t in tasks}
+        assert task1.id in task_ids
+        assert task2.id in task_ids
+        assert task3.id in task_ids
+
+        # Verify all fields are present
+        for task in tasks:
+            assert task.id is not None
+            assert task.title is not None
+            assert task.description is not None
+            assert task.completed is not None
+            assert task.created_at is not None
+            assert task.updated_at is not None
+
+    def test_list_with_completed_and_incomplete_tasks(self) -> None:
+        """
+        Test listing tasks with mixed completion status.
+
+        Acceptance Criteria:
+        - Both completed and incomplete tasks are returned
+        - Completion status is preserved
+        - Count includes all regardless of status
+
+        Per Spec FR-003, FR-004: Display both completed and incomplete tasks.
+        """
+        storage = TaskStorage()
+        task1 = storage.add_task("Incomplete task")
+        task2 = storage.add_task("Complete this")
+        storage.mark_complete(task2.id)  # Mark task2 as complete
+
+        tasks = storage.get_all_tasks()
+
+        assert len(tasks) == 2
+        incomplete_tasks = [t for t in tasks if not t.completed]
+        completed_tasks = [t for t in tasks if t.completed]
+
+        assert len(incomplete_tasks) == 1
+        assert len(completed_tasks) == 1
+        assert incomplete_tasks[0].title == "Incomplete task"
+        assert completed_tasks[0].title == "Complete this"

@@ -187,19 +187,19 @@ Coverage: 80%+ maintained
 
 ### Tests for User Story 4 (TDD: Write tests FIRST)
 
-- [ ] T-032 [P] [US4] Write test_update_title in `tests/test_storage.py`: Test partial update (title only)
-- [ ] T-033 [P] [US4] Write test_update_description in `tests/test_storage.py`: Test partial update (description only)
-- [ ] T-034 [P] [US4] Write test_update_nonexistent in `tests/test_storage.py`: Test error handling for invalid task ID
-- [ ] T-035 [P] [US4] Write test_update_command_cli in `tests/test_cli.py`: Test "update" command with various argument patterns
+- [x] T-032 [P] [US4] Write test_update_title in `tests/test_storage.py`: Test partial update (title only)
+- [x] T-033 [P] [US4] Write test_update_description in `tests/test_storage.py`: Test partial update (description only)
+- [x] T-034 [P] [US4] Write test_update_nonexistent in `tests/test_storage.py`: Test error handling for invalid task ID
+- [x] T-035 [P] [US4] Write test_update_command_cli in `tests/test_cli.py`: Test "update" command with various argument patterns
 
 ### Implementation for User Story 4
 
-- [ ] T-036 [US4] Implement TaskStorage.update_task() method in `src/storage.py` with partial update support (depends on T-005)
-- [ ] T-037 [US4] Implement "update" command handler in `src/cli.py` with flexible arg parsing (depends on T-006, T-036)
-- [ ] T-038 [US4] Add title validation in update (reject empty/whitespace) in `src/storage.py` per FR-008
-- [ ] T-039 [US4] Update timestamp (updated_at) when modifications occur in `src/models.py`
-- [ ] T-040 [US4] Add error messages for invalid updates in `src/cli.py` per FR-007
-- [ ] T-041 [US4] Run pytest to verify all US4 tests pass with ≥80% cumulative coverage
+- [x] T-036 [US4] Implement TaskStorage.update_task() method in `src/storage.py` with partial update support (depends on T-005)
+- [x] T-037 [US4] Implement "update" command handler in `src/cli.py` with flexible arg parsing (depends on T-006, T-036)
+- [x] T-038 [US4] Add title validation in update (reject empty/whitespace) in `src/storage.py` per FR-008
+- [x] T-039 [US4] Update timestamp (updated_at) when modifications occur in `src/models.py`
+- [x] T-040 [US4] Add error messages for invalid updates in `src/cli.py` per FR-007
+- [x] T-041 [US4] Run pytest to verify all US4 tests pass with ≥80% cumulative coverage
 
 **Checkpoint**: User Stories 1-4 all working (Add, List, Complete, Update) ✓
 

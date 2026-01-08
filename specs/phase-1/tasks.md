@@ -219,18 +219,18 @@ Coverage: 80%+ maintained
 
 ### Tests for User Story 5 (TDD: Write tests FIRST)
 
-- [ ] T-042 [P] [US5] Write test_delete_task in `tests/test_storage.py`: Test task removal by ID
-- [ ] T-043 [P] [US5] Write test_delete_nonexistent in `tests/test_storage.py`: Test error handling for invalid IDs
-- [ ] T-044 [P] [US5] Write test_delete_command_cli in `tests/test_cli.py`: Test "delete" command with ID validation feedback
+- [x] T-042 [P] [US5] Write test_delete_task in `tests/test_storage.py`: Test task removal by ID
+- [x] T-043 [P] [US5] Write test_delete_nonexistent in `tests/test_storage.py`: Test error handling for invalid IDs
+- [x] T-044 [P] [US5] Write test_delete_command_cli in `tests/test_cli.py`: Test "delete" command with ID validation feedback
 
 ### Implementation for User Story 5
 
-- [ ] T-045 [US5] Implement TaskStorage.delete_task() method in `src/storage.py` (depends on T-005)
-- [ ] T-046 [US5] Implement "delete" command handler in `src/cli.py` with ID parsing (depends on T-006, T-045)
-- [ ] T-047 [US5] Add validation and error messages for invalid task IDs in `src/cli.py` per FR-007
-- [ ] T-048 [US5] Ensure ID uniqueness persists across deletions (no ID reuse) - document in comments
-- [ ] T-049 [US5] Add confirmation prompt for destructive operation (optional user-friendly enhancement)
-- [ ] T-050 [US5] Run pytest to verify all US5 tests pass with ≥80% cumulative coverage
+- [x] T-045 [US5] Implement TaskStorage.delete_task() method in `src/storage.py` (depends on T-005)
+- [x] T-046 [US5] Implement "delete" command handler in `src/cli.py` with ID parsing (depends on T-006, T-045)
+- [x] T-047 [US5] Add validation and error messages for invalid task IDs in `src/cli.py` per FR-007
+- [x] T-048 [US5] Ensure ID uniqueness persists across deletions (no ID reuse) - document in comments
+- [x] T-049 [US5] Add confirmation prompt for destructive operation (optional user-friendly enhancement)
+- [x] T-050 [US5] Run pytest to verify all US5 tests pass with ≥80% cumulative coverage
 
 **Checkpoint**: All User Stories 1-5 complete (Add, List, Complete, Update, Delete) ✓
 

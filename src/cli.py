@@ -114,10 +114,10 @@ class CommandDispatcher:
         # So we use a simple approach: everything is title if it fits one word space pattern
         args_stripped = args.strip()
 
-        # Check if there's a long description separator (like quoted second part)
+        # Check if there's a long description separator (quoted second part)
         # For simplicity with the current test format, treat as:
-        # "word1 word2 word3..." -> if contains many spaces, first part is title, rest is description
-        # For test case: "Buy groceries" should all be title since test expects title="Buy groceries"
+        # "word1 word2..." -> if many spaces, first part is title, rest is
+        # description. For test: "Buy groceries" should all be title
 
         words = args_stripped.split()
         if len(words) == 1:
@@ -344,25 +344,64 @@ class CommandDispatcher:
 
         Per Spec FR-007: Provide clear error messages and help documentation.
         """
-        # [T-006] - Spec section: FR-007 (Help command)
+        # [T-053] - Spec section: FR-007 (Enhanced help command)
         if args and args.strip():
             command = args.strip().lower()
-            help_text = {
-                "add": "add <title> [description] - Create a new task",
-                "list": "list - Show all tasks with their status",
-                "complete": "complete <task_id> - Toggle task completion status",
-                "update": "update <task_id> <new_title> [new_description] - Update task",
-                "delete": "delete <task_id> - Delete a task permanently",
-                "help": "help [command] - Show this help message",
+            help_details = {
+                "add": (
+                    "add <title> [description] - Create a new task\n"
+                    "  Example: add Buy groceries\n"
+                    "  Example: add Buy groceries Milk, eggs, bread\n"
+                    "  • Title is required (non-empty)\n"
+                    "  • Description is optional\n"
+                    "  • New task gets a unique ID and timestamps"
+                ),
+                "list": (
+                    "list - Show all tasks with their status\n"
+                    "  • Displays table with ID, Status, Title, Description\n"
+                    "  • Status: ✓ Complete (done) or ☐ Pending (not done)\n"
+                    "  • Shows total count at bottom"
+                ),
+                "complete": (
+                    "complete <task_id> - Toggle task completion status\n"
+                    "  Example: complete abc123d8\n"
+                    "  • Marks incomplete tasks as complete (✓)\n"
+                    "  • Marks complete tasks as incomplete (☐)\n"
+                    "  • Updates timestamp on status change"
+                ),
+                "update": (
+                    "update <task_id> <new_title> [new_description] - Update task\n"
+                    "  Example: update abc123d8 Buy groceries and milk\n"
+                    "  Example: update abc123d8 Clean house ASAP\n"
+                    "  • Can update title only (leave description unchanged)\n"
+                    "  • Can update both title and description\n"
+                    "  • Title is required (non-empty)"
+                ),
+                "delete": (
+                    "delete <task_id> - Delete a task permanently\n"
+                    "  Example: delete abc123d8\n"
+                    "  • Permanently removes the task\n"
+                    "  • Cannot be undone\n"
+                    "  • Other tasks remain unaffected"
+                ),
+                "help": (
+                    "help [command] - Show help for commands\n"
+                    "  Example: help add\n"
+                    "  Example: help delete\n"
+                    "  • Without argument: shows all commands\n"
+                    "  • With command: shows detailed help"
+                ),
             }
-            if command in help_text:
-                self.console.print(f"[cyan]{help_text[command]}[/cyan]")
+            if command in help_details:
+                self.console.print(f"[cyan bold]{help_details[command]}[/cyan bold]")
             else:
                 self.console.print(
                     f"[yellow]No help available for command '{command}'[/yellow]"
                 )
         else:
-            self.console.print("[cyan bold]Todo App - Available Commands:[/cyan bold]")
+            self.console.print(
+                "[cyan bold]Todo App - Available Commands:[/cyan bold]"
+            )
             self.console.print("")
             self.console.print(
                 "[cyan]add <title> [description][/cyan] - Create a new task"
@@ -374,7 +413,7 @@ class CommandDispatcher:
                 "[cyan]complete <task_id>[/cyan] - Toggle task completion"
             )
             self.console.print(
-                "[cyan]update <task_id> <title> [desc][/cyan] - Update task details"
+                "[cyan]update <task_id> <title> [desc][/cyan] - Update task"
             )
             self.console.print(
                 "[cyan]delete <task_id>[/cyan] - Delete a task"
@@ -383,6 +422,9 @@ class CommandDispatcher:
                 "[cyan]help [command][/cyan] - Show help"
             )
             self.console.print("")
+            self.console.print(
+                "[dim]Type 'help <command>' for more details[/dim]"
+            )
             self.console.print(
                 "[dim]Type 'exit' or 'quit' to exit the application[/dim]"
             )

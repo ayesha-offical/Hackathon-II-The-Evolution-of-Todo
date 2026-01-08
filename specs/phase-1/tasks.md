@@ -157,17 +157,17 @@ Coverage: 80%+ maintained
 
 ### Tests for User Story 3 (TDD: Write tests FIRST)
 
-- [ ] T-024 [P] [US3] Write test_toggle_completion in `tests/test_storage.py`: Test mark_complete() toggle behavior
-- [ ] T-025 [P] [US3] Write test_invalid_task_id in `tests/test_storage.py`: Test error handling for non-existent task IDs
-- [ ] T-026 [P] [US3] Write test_complete_command_cli in `tests/test_cli.py`: Test "complete" command parsing and user feedback
+- [x] T-024 [P] [US3] Write test_toggle_completion in `tests/test_storage.py`: Test mark_complete() toggle behavior
+- [x] T-025 [P] [US3] Write test_invalid_task_id in `tests/test_storage.py`: Test error handling for non-existent task IDs
+- [x] T-026 [P] [US3] Write test_complete_command_cli in `tests/test_cli.py`: Test "complete" command parsing and user feedback
 
 ### Implementation for User Story 3
 
-- [ ] T-027 [US3] Implement TaskStorage.mark_complete() method with toggle logic in `src/storage.py` (depends on T-005)
-- [ ] T-028 [US3] Implement "complete" command handler in `src/cli.py` with ID parsing (depends on T-006, T-027)
-- [ ] T-029 [US3] Add validation for task ID existence and clear error messages in `src/cli.py` per FR-007
-- [ ] T-030 [US3] Add timestamp update for updated_at field when status changes in `src/models.py`
-- [ ] T-031 [US3] Run pytest to verify all US3 tests pass with ≥80% cumulative coverage
+- [x] T-027 [US3] Implement TaskStorage.mark_complete() method with toggle logic in `src/storage.py` (depends on T-005)
+- [x] T-028 [US3] Implement "complete" command handler in `src/cli.py` with ID parsing (depends on T-006, T-027)
+- [x] T-029 [US3] Add validation for task ID existence and clear error messages in `src/cli.py` per FR-007
+- [x] T-030 [US3] Add timestamp update for updated_at field when status changes in `src/models.py`
+- [x] T-031 [US3] Run pytest to verify all US3 tests pass with ≥80% cumulative coverage
 
 **Checkpoint**: User Stories 1 + 2 + 3 (Add, List, Complete) all P1 features working ✓
 

@@ -194,7 +194,7 @@ class CommandDispatcher:
         Handle 'complete' command: complete <task_id>
 
         Args:
-            args: Task ID to toggle completion status
+            args: Full task ID or short ID (first 8 characters)
 
         Returns:
             True on success, False on error
@@ -212,7 +212,12 @@ class CommandDispatcher:
             return False
 
         task_id = args.strip()
-        task = self.storage.mark_complete(task_id)
+
+        try:
+            task = self.storage.mark_complete(task_id)
+        except ValueError as e:
+            self.console.print(f"[red]Error: {str(e)}[/red]")
+            return False
 
         if task is None:
             self.console.print(
@@ -231,7 +236,7 @@ class CommandDispatcher:
         Handle 'update' command: update <task_id> <title> [description]
 
         Args:
-            args: Task ID, new title, and optional new description
+            args: Task ID (full or short), new title, and optional new description
                 Format: "task-id New title" or "task-id New title New description"
 
         Returns:
@@ -278,7 +283,11 @@ class CommandDispatcher:
             remaining = " ".join(words[3:])
             new_description = remaining if remaining else None
 
-        task = self.storage.update_task(task_id, new_title, new_description)
+        try:
+            task = self.storage.update_task(task_id, new_title, new_description)
+        except ValueError as e:
+            self.console.print(f"[red]Error: {str(e)}[/red]")
+            return False
 
         if task is None:
             self.console.print(
@@ -298,7 +307,7 @@ class CommandDispatcher:
         Handle 'delete' command: delete <task_id>
 
         Args:
-            args: Task ID to delete
+            args: Full task ID or short ID (first 8 characters)
 
         Returns:
             True on success, False on error
@@ -318,7 +327,12 @@ class CommandDispatcher:
         task_id = args.strip()
 
         # Get task info before deletion for better feedback
-        task = self.storage.get_task(task_id)
+        try:
+            task = self.storage.get_task(task_id)
+        except ValueError as e:
+            self.console.print(f"[red]Error: {str(e)}[/red]")
+            return False
+
         if task is None:
             self.console.print(
                 f"[red]Error: Task '{task_id}' not found[/red]"
@@ -365,6 +379,7 @@ class CommandDispatcher:
                 "complete": (
                     "complete <task_id> - Toggle task completion status\n"
                     "  Example: complete abc123d8\n"
+                    "  • Task ID can be full UUID or short ID (first 8 chars)\n"
                     "  • Marks incomplete tasks as complete (✓)\n"
                     "  • Marks complete tasks as incomplete (☐)\n"
                     "  • Updates timestamp on status change"
@@ -373,6 +388,7 @@ class CommandDispatcher:
                     "update <task_id> <new_title> [new_description] - Update task\n"
                     "  Example: update abc123d8 Buy groceries and milk\n"
                     "  Example: update abc123d8 Clean house ASAP\n"
+                    "  • Task ID can be full UUID or short ID (first 8 chars)\n"
                     "  • Can update title only (leave description unchanged)\n"
                     "  • Can update both title and description\n"
                     "  • Title is required (non-empty)"
@@ -380,6 +396,7 @@ class CommandDispatcher:
                 "delete": (
                     "delete <task_id> - Delete a task permanently\n"
                     "  Example: delete abc123d8\n"
+                    "  • Task ID can be full UUID or short ID (first 8 chars)\n"
                     "  • Permanently removes the task\n"
                     "  • Cannot be undone\n"
                     "  • Other tasks remain unaffected"

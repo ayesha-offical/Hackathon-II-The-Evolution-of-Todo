@@ -9,7 +9,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { authClient } from "@/lib/auth";
-import type { User, AuthContextType } from "@/types/auth";
+import type { User, AuthContextType, BetterAuthSessionResponse } from "@/types/auth";
 
 /**
  * AuthContext for storing authentication state
@@ -57,12 +57,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
    */
   async function checkSession() {
     try {
-      const sessionData = await authClient.getSession();
-      const session = (sessionData as any)?.data || sessionData;
+      const sessionData = (await authClient.getSession()) as unknown as BetterAuthSessionResponse;
+      const session = sessionData?.data || sessionData;
 
-      if ((session as any)?.user) {
+      if (session?.user) {
         // User is authenticated
-        setUser((session as any).user as User);
+        setUser(session.user as User);
         setIsError(false);
         setError(null);
       } else {

@@ -17,6 +17,7 @@ import { authClient } from "@/lib/auth";
 import { useAuth } from "@/contexts/AuthContext";
 import { ROUTES, ERROR_MESSAGES, EMAIL_REGEX } from "@/config/constants";
 import { PasswordInput } from "@/components/common/PasswordInput";
+import type { BetterAuthSignInResponse } from "@/types/auth";
 
 /**
  * Login form validation schema
@@ -85,12 +86,12 @@ export default function LoginPage() {
 
       // Use Better Auth to sign in
       // This sends request to /api/v1/auth/login and stores JWT in HTTP-only cookie
-      const result = await authClient.signIn.email({
+      const result = (await authClient.signIn.email({
         email: data.email,
         password: data.password,
-      });
+      })) as unknown as BetterAuthSignInResponse;
 
-      if (result && ((result as any)?.user || (result as any)?.data?.user)) {
+      if (result && (result.user || result.data?.user)) {
         // Login successful, redirect to dashboard
         router.push(ROUTES.DASHBOARD);
       } else {

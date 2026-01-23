@@ -64,3 +64,35 @@ export interface Session {
   user: User | null;
   token?: string;
 }
+
+/**
+ * Better Auth sign-in response
+ * Handles both response formats from different Better Auth versions
+ */
+export interface BetterAuthSignInResponse {
+  user?: User;
+  data?: {
+    user?: User;
+    session?: {
+      token?: string;
+    };
+  };
+  token?: string;
+  session?: {
+    token?: string;
+  };
+}
+
+/**
+ * Better Auth session response
+ * Handles session data with nested user object
+ */
+export interface BetterAuthSessionResponse {
+  user?: User;
+  data?: {
+    user?: User;
+    session?: {
+      token?: string;
+    };
+  };
+}

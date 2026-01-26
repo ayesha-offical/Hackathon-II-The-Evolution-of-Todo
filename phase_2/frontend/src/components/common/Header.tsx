@@ -9,7 +9,6 @@
 
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { authClient } from "@/lib/auth";
 import { ROUTES } from "@/config/constants";
 
 /**
@@ -27,21 +26,7 @@ import { ROUTES } from "@/config/constants";
  * - Used on all pages to provide navigation
  */
 export function Header() {
-  const { user, isLoading } = useAuth();
-
-  /**
-   * Handle logout
-   * Call Better Auth signOut and redirect to login
-   */
-  async function handleLogout() {
-    try {
-      await authClient.signOut();
-      // Redirect to login page
-      window.location.href = ROUTES.LOGIN;
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
-  }
+  const { user, isLoading, logout } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 border-b bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
@@ -72,7 +57,7 @@ export function Header() {
 
                 {/* Logout button */}
                 <button
-                  onClick={handleLogout}
+                  onClick={logout}
                   className="btn-secondary inline-flex items-center gap-2 px-3 py-2 text-sm"
                 >
                   <span>Logout</span>

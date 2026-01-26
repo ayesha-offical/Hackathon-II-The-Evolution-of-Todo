@@ -8,7 +8,9 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { apiCall } from "@/lib/api";
+import { ROUTES } from "@/config/constants";
 import type { User, AuthContextType, BetterAuthSessionResponse } from "@/types/auth";
 
 /**
@@ -17,6 +19,7 @@ import type { User, AuthContextType, BetterAuthSessionResponse } from "@/types/a
  */
 export interface AuthContextValue extends AuthContextType {
   refreshSession: () => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -42,6 +45,7 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
  * Reference: Constitution II - User identity comes from JWT session
  */
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
@@ -94,6 +98,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   /**
+   * Logout function
+   * Clears session and redirects to login
+   */
+  async function logout() {
+    try {
+      // Clear sessionStorage token
+      if (typeof window !== "undefined") {
+        sessionStorage.removeItem('auth_token');
+      }
+
+      // Call logout endpoint
+      try {
+        await apiCall("/api/v1/auth/logout", { method: "POST" });
+      } catch {
+        // Logout endpoint error is not critical - user token is already cleared
+      }
+
+      // Clear user state
+      setUser(null);
+      setIsError(false);
+      setError(null);
+
+      // Redirect to login
+      router.push(ROUTES.LOGIN);
+    } catch (err) {
+      console.error("Logout error:", err);
+      // Still redirect even if there's an error
+      setUser(null);
+      router.push(ROUTES.LOGIN);
+    }
+  }
+
+  /**
    * Context value provided to children
    * Reference: @specs/001-sdd-initialization/types/auth.ts §AuthContextType
    */
@@ -103,6 +140,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     isError,
     error,
     refreshSession: checkSession,
+    logout,
   };
 
   return (
@@ -121,17 +159,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
  * import { useAuth } from "@/contexts/AuthContext";
  *
  * export function MyComponent() {
- *   const { user, isLoading, refreshSession } = useAuth();
+ *   const { user, isLoading, refreshSession, logout } = useAuth();
  *
  *   if (isLoading) return <div>Loading...</div>;
  *   if (!user) return <div>Not authenticated</div>;
  *
- *   return <div>Welcome {user.email}</div>;
+ *   return (
+ *     <div>
+ *       Welcome {user.email}
+ *       <button onClick={logout}>Logout</button>
+ *     </div>
+ *   );
  * }
  * ```
  *
  * @throws Error if used outside of AuthProvider
- * @returns AuthContextValue with user, loading, error state, and refreshSession function
+ * @returns AuthContextValue with user, loading, error state, and session functions
  */
 export function useAuth(): AuthContextValue {
   const context = useContext(AuthContext);

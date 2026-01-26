@@ -54,7 +54,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
  */
 export default function LoginPage() {
   const router = useRouter();
-  const { user, isLoading: authLoading } = useAuth();
+  const { user, isLoading: authLoading, refreshSession } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -92,8 +92,21 @@ export default function LoginPage() {
       })) as unknown as BetterAuthSignInResponse;
 
       if (result && (result.user || result.data?.user)) {
-        // Login successful, redirect to dashboard
-        router.push(ROUTES.DASHBOARD);
+        // Store token for Authorization header if returned in response
+        const token = result.token || result.data?.token;
+        if (token) {
+          // Store in sessionStorage for JWT bearer token injection
+          sessionStorage.setItem('auth_token', token);
+        }
+
+        // Login successful, refresh session to update AuthContext
+        // This ensures the user state is updated before redirecting to dashboard
+        await refreshSession();
+
+        // Small delay ensures the browser processes the HTTP-only cookie
+        setTimeout(() => {
+          router.push(ROUTES.DASHBOARD);
+        }, 300);
       } else {
         setSubmitError(ERROR_MESSAGES.INVALID_CREDENTIALS);
       }

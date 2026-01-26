@@ -65,6 +65,10 @@ PUBLIC_ENDPOINTS = {
     "/api/v1/auth/refresh",  # Refresh can use refresh token instead of access token
     "/api/v1/auth/forgot-password",
     "/api/v1/auth/reset-password",
+    # Better Auth compatible endpoints
+    "/api/v1/auth/sign-up/email",
+    "/api/v1/auth/sign-in/email",
+    "/api/v1/auth/get-session",
     # Documentation endpoints
     "/docs",
     "/redoc",

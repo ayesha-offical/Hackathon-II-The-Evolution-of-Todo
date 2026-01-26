@@ -7,8 +7,7 @@
 
 import type { Metadata } from "next";
 import "./globals.css";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { Header } from "@/components/common/Header";
+import { RootProvider } from "@/components/RootProvider";
 
 export const metadata: Metadata = {
   title: "Phase 2 Todo App",
@@ -25,10 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className="bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
-        <AuthProvider>
-          <Header />
-          {children}
-        </AuthProvider>
+        <RootProvider>{children}</RootProvider>
       </body>
     </html>
   );

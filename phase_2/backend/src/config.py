@@ -55,7 +55,7 @@ class Settings(BaseSettings):
     # CORS CONFIGURATION
     # =========================================================================
 
-    frontend_url: str = "http://localhost:3000"
+    frontend_url: str = "http://localhost:3001"
     """Frontend URL for CORS - allows requests from frontend origin only"""
 
     # =========================================================================

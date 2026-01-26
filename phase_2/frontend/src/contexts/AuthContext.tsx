@@ -8,14 +8,18 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { authClient } from "@/lib/auth";
+import { apiCall } from "@/lib/api";
 import type { User, AuthContextType, BetterAuthSessionResponse } from "@/types/auth";
 
 /**
  * AuthContext for storing authentication state
  * Available to all components wrapped in AuthProvider
  */
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export interface AuthContextValue extends AuthContextType {
+  refreshSession: () => Promise<void>;
+}
+
+const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 /**
  * AuthProvider component
@@ -54,10 +58,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   /**
    * Verify current session status
    * Called on mount and can be called manually to refresh
+   * Uses direct API call to ensure JWT token is properly sent with credentials
    */
   async function checkSession() {
     try {
-      const sessionData = (await authClient.getSession()) as unknown as BetterAuthSessionResponse;
+      const response = await apiCall("/api/v1/auth/get-session");
+
+      if (!response.ok) {
+        setUser(null);
+        setIsError(false);
+        setError(null);
+        return;
+      }
+
+      const sessionData = (await response.json()) as unknown as BetterAuthSessionResponse;
       const session = sessionData?.data || sessionData;
 
       if (session?.user) {
@@ -70,9 +84,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(null);
       }
     } catch (err) {
-      // Session check failed (network error, etc.)
-      setIsError(true);
-      setError(err instanceof Error ? err.message : "Session check failed");
+      // Session check failed (network error, etc.) - this is okay, user is just not authenticated
+      setIsError(false);
+      setError(null);
       setUser(null);
     } finally {
       setIsLoading(false);
@@ -83,11 +97,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
    * Context value provided to children
    * Reference: @specs/001-sdd-initialization/types/auth.ts §AuthContextType
    */
-  const value: AuthContextType = {
+  const value: AuthContextValue = {
     user,
     isLoading,
     isError,
     error,
+    refreshSession: checkSession,
   };
 
   return (
@@ -106,7 +121,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
  * import { useAuth } from "@/contexts/AuthContext";
  *
  * export function MyComponent() {
- *   const { user, isLoading } = useAuth();
+ *   const { user, isLoading, refreshSession } = useAuth();
  *
  *   if (isLoading) return <div>Loading...</div>;
  *   if (!user) return <div>Not authenticated</div>;
@@ -116,9 +131,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
  * ```
  *
  * @throws Error if used outside of AuthProvider
- * @returns AuthContextType with user, loading, error state
+ * @returns AuthContextValue with user, loading, error state, and refreshSession function
  */
-export function useAuth(): AuthContextType {
+export function useAuth(): AuthContextValue {
   const context = useContext(AuthContext);
 
   if (context === undefined) {

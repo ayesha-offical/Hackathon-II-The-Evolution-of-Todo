@@ -6,10 +6,11 @@
 from typing import Optional
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Response
+from jose import jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.dependencies import get_current_user_id
-from src.constants import JWT_ACCESS_TOKEN_EXPIRE_SECONDS
+from src.constants import JWT_ACCESS_TOKEN_EXPIRE_SECONDS, JWT_ALGORITHM
 from src.db.session import get_db_session
 from src.errors import (
     InvalidCredentialsError,
@@ -21,6 +22,184 @@ from src.schemas.user import UserCreate, UserLogin, UserResponse
 from src.services.auth_service import AuthService
 
 router = APIRouter()
+
+
+# ============================================================================
+# Better Auth Compatible Endpoints
+# ============================================================================
+
+@router.post(
+    "/sign-up/email",
+    response_model=dict,
+    status_code=200,
+    summary="Better Auth Sign Up",
+    description="Sign up with email (Better Auth compatible)",
+)
+async def better_auth_sign_up(
+    user_data: UserCreate,
+    session: AsyncSession = Depends(get_db_session),
+) -> dict:
+    """Better Auth compatible sign-up endpoint."""
+    try:
+        service = AuthService(session)
+        user = await service.register_user(
+            email=user_data.email,
+            password=user_data.password,
+        )
+        await session.commit()
+        return {
+            "user": {
+                "id": user.id,
+                "email": user.email,
+                "name": getattr(user, "name", user.email.split("@")[0]),
+                "is_verified": user.is_verified,
+                "created_at": user.created_at.isoformat() if user.created_at else None,
+            },
+            "url": None,
+        }
+    except UserExistsError as e:
+        await session.rollback()
+        raise HTTPException(status_code=409, detail=str(e))
+    except InvalidCredentialsError as e:
+        await session.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        await session.rollback()
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Sign up error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post(
+    "/sign-in/email",
+    response_model=dict,
+    status_code=200,
+    summary="Better Auth Sign In",
+    description="Sign in with email (Better Auth compatible)",
+)
+async def better_auth_sign_in(
+    credentials: UserLogin,
+    response: Response,
+    session: AsyncSession = Depends(get_db_session),
+) -> dict:
+    """Better Auth compatible sign-in endpoint."""
+    try:
+        service = AuthService(session)
+        user, access_token, refresh_token = await service.login_user(
+            email=credentials.email,
+            password=credentials.password,
+        )
+        await session.commit()
+
+        # Set HTTP-only cookies
+        response.set_cookie(
+            key="Authorization",
+            value=f"Bearer {access_token}",
+            httponly=True,
+            secure=False,  # False for localhost, True in production
+            samesite="lax",
+            max_age=JWT_ACCESS_TOKEN_EXPIRE_SECONDS,
+        )
+        response.set_cookie(
+            key="RefreshToken",
+            value=refresh_token,
+            httponly=True,
+            secure=False,
+            samesite="lax",
+            max_age=2592000,
+        )
+
+        return {
+            "user": {
+                "id": user.id,
+                "email": user.email,
+                "name": getattr(user, "name", user.email.split("@")[0]),
+                "is_verified": user.is_verified,
+                "created_at": user.created_at.isoformat() if user.created_at else None,
+            },
+            "token": access_token,
+            "expires_in": JWT_ACCESS_TOKEN_EXPIRE_SECONDS,
+        }
+    except (InvalidCredentialsError, UserNotFoundError):
+        await session.rollback()
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    except Exception as e:
+        await session.rollback()
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+
+@router.get(
+    "/get-session",
+    response_model=dict,
+    status_code=200,
+    summary="Get Session",
+    description="Get current session (Better Auth compatible)",
+)
+async def better_auth_get_session(
+    session: AsyncSession = Depends(get_db_session),
+    authorization: Optional[str] = Header(None),
+) -> dict:
+    """Get current session from Authorization header or cookies."""
+    from src.config import get_settings
+    from src.models.user import User
+    from sqlalchemy import select
+
+    try:
+        token = None
+
+        # Try to get token from Authorization header first
+        if authorization and authorization.startswith("Bearer "):
+            token = authorization[len("Bearer "):].strip()
+
+        # If no token in header, return empty session (cookies will be sent automatically by browser)
+        if not token:
+            return {"user": None, "session": None}
+
+        settings = get_settings()
+
+        try:
+            payload = jwt.decode(
+                token,
+                settings.better_auth_secret,
+                algorithms=[JWT_ALGORITHM],
+            )
+        except Exception as decode_error:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.debug(f"JWT decode error: {decode_error}")
+            return {"user": None, "session": None}
+
+        user_id = payload.get("sub")
+        if not user_id:
+            return {"user": None, "session": None}
+
+        # Get user from database
+        result = await session.execute(select(User).where(User.id == user_id))
+        user = result.scalar_one_or_none()
+
+        if not user:
+            return {"user": None, "session": None}
+
+        return {
+            "user": {
+                "id": user.id,
+                "email": user.email,
+                "name": getattr(user, "name", user.email.split("@")[0]),
+                "is_verified": user.is_verified,
+                "created_at": user.created_at.isoformat() if user.created_at else None,
+            },
+            "session": {
+                "id": user_id,
+                "user_id": user_id,
+                "expires_at": payload.get("exp"),
+            },
+        }
+    except Exception as e:
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.debug(f"Session check error: {e}")
+        return {"user": None, "session": None}
 
 
 # ============================================================================

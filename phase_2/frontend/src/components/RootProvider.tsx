@@ -9,12 +9,12 @@
 
 import React from "react";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { Header } from "@/components/common/Header";
+import { Navigation } from "@/components/common/Navigation";
 
 export function RootProvider({ children }: { children: React.ReactNode }) {
   return (
     <AuthProvider>
-      <Header />
+      <Navigation />
       {children}
     </AuthProvider>
   );

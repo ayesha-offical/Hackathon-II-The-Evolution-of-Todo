@@ -7,7 +7,7 @@
 
 import type { Metadata } from "next";
 import "./globals.css";
-import { RootProvider } from "@/components/RootProvider";
+import { RootLayoutClient } from "@/components/RootLayoutClient";
 
 export const metadata: Metadata = {
   title: "Phase 2 Todo App",
@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className="bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
-        <RootProvider>{children}</RootProvider>
+        <RootLayoutClient>{children}</RootLayoutClient>
       </body>
     </html>
   );

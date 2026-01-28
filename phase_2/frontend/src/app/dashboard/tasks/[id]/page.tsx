@@ -12,7 +12,6 @@ import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import TaskForm from '@/components/TaskForm';
 import { ErrorAlert, SuccessToast, AlertContainer } from '@/components/common/Alert';
-import Header from '@/components/common/Header';
 import { apiCall } from '@/lib/api';
 import { ROUTES, TASK_STATUS } from '@/config/constants';
 import type { Task, ErrorResponse } from '@/types';
@@ -218,7 +217,6 @@ export default function EditTaskPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header title="Edit Task" />
         <main className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center justify-center py-12">
             <div className="text-center">
@@ -247,7 +245,6 @@ export default function EditTaskPage() {
   if (!task && error) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header title="Edit Task" />
         <main className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <AlertContainer>
             <ErrorAlert
@@ -272,7 +269,6 @@ export default function EditTaskPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <Header title="Edit Task" />
 
       {/* Main Content */}
       <main className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

@@ -98,7 +98,7 @@ export default function ForgotPasswordPage() {
             Reset your password
           </h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            Enter your email address and we'll send you a link to reset your password.
+            Enter your email address and we&apos;ll send you a link to reset your password.
           </p>
         </div>
 
@@ -179,7 +179,7 @@ export default function ForgotPasswordPage() {
               </Link>
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link
                 href={ROUTES.REGISTER}
                 className="font-medium text-blue-600 hover:text-blue-500"

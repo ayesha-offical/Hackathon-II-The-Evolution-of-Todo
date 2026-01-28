@@ -630,7 +630,7 @@
 
 ### Dashboard & Task Pages
 
-- [ ] T070 Implement dashboard page in `frontend/src/app/dashboard/page.tsx`:
+- [x] T070 Implement dashboard page in `frontend/src/app/dashboard/page.tsx`:
   - Protected route (redirect to login if not authenticated)
   - Layout:
     - Header with "Dashboard" title and + New Task button
@@ -644,7 +644,7 @@
   - On task click: Navigate to edit page
   - Reference: ui/pages.md §Dashboard Page
 
-- [ ] T071 Implement create task page in `frontend/src/app/dashboard/tasks/new/page.tsx`:
+- [x] T071 Implement create task page in `frontend/src/app/dashboard/tasks/new/page.tsx`:
   - Protected route
   - Layout: Back button, "New Task" title, TaskForm component
   - Form submission:
@@ -655,7 +655,7 @@
   - Cancel button: Return to /dashboard without saving
   - Reference: ui/pages.md §Create Task Page
 
-- [ ] T072 Implement edit task page in `frontend/src/app/dashboard/tasks/[id]/page.tsx`:
+- [x] T072 Implement edit task page in `frontend/src/app/dashboard/tasks/[id]/page.tsx`:
   - Protected route
   - Route param: id (task ID)
   - On page load: Fetch task: `GET /api/v1/tasks/{id}`
